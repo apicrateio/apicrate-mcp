@@ -53,9 +53,9 @@ apicrate-mcp = "apicrate_mcp.server:main"
 [project.urls]
 Homepage = "https://apicrate.io"
 Documentation = "https://apicrate.io/docs/s/mcp/index.html"
-Repository = "https://github.com/apicrate/apicrate-mcp"
-Issues = "https://github.com/apicrate/apicrate-mcp/issues"
-Changelog = "https://github.com/apicrate/apicrate-mcp/blob/main/CHANGELOG.md"
+Repository = "https://github.com/apicrateio/apicrate-mcp"
+Issues = "https://github.com/apicrateio/apicrate-mcp/issues"
+Changelog = "https://github.com/apicrateio/apicrate-mcp/blob/main/CHANGELOG.md"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/apicrate_mcp"]

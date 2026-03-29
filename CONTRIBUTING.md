@@ -4,7 +4,7 @@ Thanks for your interest in contributing! Here's how to get started.
 
 ## Reporting Issues
 
-If you find a bug or have a feature request, please [open an issue](https://github.com/apicrate/apicrate-mcp/issues) with:
+If you find a bug or have a feature request, please [open an issue](https://github.com/apicrateio/apicrate-mcp/issues) with:
 
 - A clear description of the problem or suggestion
 - Steps to reproduce (for bugs)
@@ -13,7 +13,7 @@ If you find a bug or have a feature request, please [open an issue](https://gith
 ## Development Setup
 
 ```bash
-git clone https://github.com/apicrate/apicrate-mcp.git
+git clone https://github.com/apicrateio/apicrate-mcp.git
 cd apicrate-mcp
 python -m venv .venv
 source .venv/bin/activate

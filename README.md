@@ -246,7 +246,7 @@ Every response includes quota headers (`X-Quota-Limit`, `X-Quota-Remaining`, `X-
 
 ```bash
 # Clone the repo
-git clone https://github.com/apicrate/apicrate-mcp.git
+git clone https://github.com/apicrateio/apicrate-mcp.git
 cd apicrate-mcp
 
 # Create a virtual environment

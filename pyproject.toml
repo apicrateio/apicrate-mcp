@@ -1,0 +1,79 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "apicrate-mcp"
+version = "0.1.0"
+description = "ApiCrate MCP Server — 21 data tools for AI agents (IP geolocation, email risk, postal codes, and more)"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.10"
+authors = [
+    { name = "ApiCrate", email = "hello@apicrate.io" },
+]
+keywords = [
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "api",
+    "geolocation",
+    "email-validation",
+    "postal-codes",
+    "user-agent",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Internet :: WWW/HTTP",
+]
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
+
+[project.scripts]
+apicrate-mcp = "apicrate_mcp.server:main"
+
+[project.urls]
+Homepage = "https://apicrate.io"
+Documentation = "https://apicrate.io/docs/s/mcp/index.html"
+Repository = "https://github.com/apicrate/apicrate-mcp"
+Issues = "https://github.com/apicrate/apicrate-mcp/issues"
+Changelog = "https://github.com/apicrate/apicrate-mcp/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/apicrate_mcp"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "SIM"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/apicrate_mcp/server.py" = ["E501"]  # Tool definition dicts are more readable as single lines
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"

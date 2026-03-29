@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "apicrate": {
+      "command": "apicrate-mcp",
+      "env": {
+        "APICRATE_API_KEY": "ac_usr_your_key_here"
+      }
+    }
+  }
+}

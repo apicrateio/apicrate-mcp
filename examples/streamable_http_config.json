@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "apicrate": {
+      "type": "streamableHttp",
+      "url": "https://api.apicrate.io/mcp/",
+      "headers": {
+        "X-API-Key": "ac_usr_your_key_here"
+      }
+    }
+  }
+}

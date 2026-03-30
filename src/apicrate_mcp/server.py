@@ -11,14 +11,16 @@ Usage:
     APICRATE_API_KEY=ac_usr_... python -m apicrate_mcp
 """
 
+import inspect
 import json
 import os
 import sys
 import threading
-from typing import Any
+from typing import Annotated, Any
 
 import httpx
 from mcp.server.fastmcp import FastMCP
+from pydantic import Field
 
 # ---------------------------------------------------------------------------
 # Configuration defaults
@@ -460,8 +462,25 @@ def _ensure_client() -> httpx.AsyncClient:
     return _client
 
 
-def _make_handler(tool_name: str):
-    """Create a handler function for a given tool."""
+_TYPE_MAP: dict[str, Any] = {
+    "string": str,
+    "str": str,
+    "number": float,
+    "float": float,
+    "integer": int,
+    "int": int,
+    "list[string]": list[str],
+    "list[dict]": list[dict[str, Any]],
+}
+
+
+def _make_handler(tool_name: str, params: dict[str, dict[str, Any]]):
+    """Create a handler function for a given tool with typed parameters.
+
+    Builds a proper ``inspect.Signature`` so that FastMCP exposes correct
+    parameter types, descriptions, and required/optional status in the
+    MCP tool schema.
+    """
 
     async def handler(**kwargs: Any) -> str:
         client = _ensure_client()
@@ -481,6 +500,29 @@ def _make_handler(tool_name: str):
 
         return json.dumps(result, indent=2)
 
+    # Build typed signature for FastMCP schema generation
+    sig_params = []
+    annotations: dict[str, Any] = {}
+    for pname, pdef in params.items():
+        base_type = _TYPE_MAP.get(pdef.get("type", "string"), Any)
+        required = pdef.get("required", True)
+        desc = pdef.get("description", "")
+
+        if required:
+            ann = Annotated[base_type, Field(description=desc)]  # type: ignore[valid-type]
+            param = inspect.Parameter(pname, inspect.Parameter.KEYWORD_ONLY, annotation=ann)
+        else:
+            ann = Annotated[base_type | None, Field(description=desc)]  # type: ignore[valid-type]
+            param = inspect.Parameter(
+                pname, inspect.Parameter.KEYWORD_ONLY, default=None, annotation=ann
+            )
+
+        sig_params.append(param)
+        annotations[pname] = ann
+
+    annotations["return"] = str
+    handler.__signature__ = inspect.Signature(sig_params)  # type: ignore[assignment]
+    handler.__annotations__ = annotations
     handler.__name__ = tool_name.replace("-", "_")
     return handler
 
@@ -489,21 +531,7 @@ def _make_handler(tool_name: str):
 for _tool_def in TOOLS:
     _name = _tool_def["name"]
     _desc = _tool_def["description"]
-    _handler = _make_handler(_name)
-
-    # Build parameter annotations for FastMCP
-    _params = {}
-    for pname, pdef in _tool_def.get("params", {}).items():
-        ptype = pdef.get("type", "string")
-        if ptype in ("string", "str"):
-            _params[pname] = (str, pdef.get("description", ""))
-        elif ptype in ("number", "float"):
-            _params[pname] = (float, pdef.get("description", ""))
-        elif ptype in ("integer", "int"):
-            _params[pname] = (int, pdef.get("description", ""))
-        else:
-            _params[pname] = (Any, pdef.get("description", ""))
-
+    _handler = _make_handler(_name, _tool_def.get("params", {}))
     mcp.tool(name=_name, description=_desc)(_handler)
 
 

@@ -1,8 +1,5 @@
 """Tests for the ApiCrate MCP server."""
 
-from __future__ import annotations
-
-import json
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -76,7 +73,7 @@ def test_call_tool_success():
     mock_client = MagicMock()
     mock_client.post.return_value = mock_response
 
-    result = _call_tool(mock_client, "apicrate-lookup-country", {"code": "DE"})
+    _call_tool(mock_client, "apicrate-lookup-country", {"code": "DE"})
 
     mock_client.post.assert_called_once()
     call_args = mock_client.post.call_args
@@ -112,9 +109,8 @@ def test_missing_api_key_exits():
     """Server should exit if APICRATE_API_KEY is not set."""
     from apicrate_mcp.server import _get_client
 
-    with patch.dict("os.environ", {"APICRATE_API_KEY": ""}, clear=False):
-        with pytest.raises(SystemExit):
-            _get_client()
+    with patch.dict("os.environ", {"APICRATE_API_KEY": ""}, clear=False), pytest.raises(SystemExit):
+        _get_client()
 
 
 def test_version():

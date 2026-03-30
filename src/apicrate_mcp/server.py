@@ -11,8 +11,6 @@ Usage:
     APICRATE_API_KEY=ac_usr_... python -m apicrate_mcp
 """
 
-from __future__ import annotations
-
 import json
 import os
 import sys
@@ -96,7 +94,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-search-countries",
-        "description": ("Search or filter countries by region, sub-region, or name."),
+        "description": "Search or filter countries by region, sub-region, or name.",
         "params": {
             "query": {
                 "type": "string",
@@ -117,7 +115,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-validate-country-codes",
-        "description": ("Validate one or more ISO 3166-1 country codes (max 50)."),
+        "description": "Validate one or more ISO 3166-1 country codes (max 50).",
         "params": {
             "codes": {
                 "type": "list[string]",
@@ -167,7 +165,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-search-postal-codes",
-        "description": ("Search postal codes within a country by place name or code prefix."),
+        "description": "Search postal codes within a country by place name or code prefix.",
         "params": {
             "country_code": {
                 "type": "string",
@@ -188,7 +186,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-list-postal-systems",
-        "description": ("List countries with postal code data and their code formats."),
+        "description": "List countries with postal code data and their code formats.",
         "params": {
             "query": {
                 "type": "string",
@@ -227,7 +225,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-find-nearby-postal-codes",
-        "description": ("Find postal codes near a geographic point, ordered by distance."),
+        "description": "Find postal codes near a geographic point, ordered by distance.",
         "params": {
             "country_code": {
                 "type": "string",
@@ -254,7 +252,7 @@ TOOLS: list[dict[str, Any]] = [
     # Timezones
     {
         "name": "apicrate-get-timezone-info",
-        "description": ("Get current time, UTC offset, and DST status for a timezone."),
+        "description": "Get current time, UTC offset, and DST status for a timezone.",
         "params": {
             "timezone": {
                 "type": "string",
@@ -265,7 +263,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-convert-time",
-        "description": ("Convert a time from one timezone to another."),
+        "description": "Convert a time from one timezone to another.",
         "params": {
             "time": {
                 "type": "string",
@@ -279,7 +277,7 @@ TOOLS: list[dict[str, Any]] = [
     # Hashing
     {
         "name": "apicrate-compute-hash",
-        "description": ("Compute a cryptographic digest (MD5, SHA-1, SHA-256, or SHA-512)."),
+        "description": "Compute a cryptographic digest (MD5, SHA-1, SHA-256, or SHA-512).",
         "params": {
             "data": {"type": "string", "required": True, "description": "The string to hash."},
             "algorithm": {
@@ -310,7 +308,7 @@ TOOLS: list[dict[str, Any]] = [
     # Bible
     {
         "name": "apicrate-get-bible-verse",
-        "description": ("Retrieve a verse or verse range from 30+ Bible translations."),
+        "description": "Retrieve a verse or verse range from 30+ Bible translations.",
         "params": {
             "reference": {
                 "type": "string",
@@ -326,7 +324,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-search-bible",
-        "description": ("Search the Bible for verses matching a keyword or phrase."),
+        "description": "Search the Bible for verses matching a keyword or phrase.",
         "params": {
             "query": {
                 "type": "string",
@@ -358,7 +356,7 @@ TOOLS: list[dict[str, Any]] = [
     },
     {
         "name": "apicrate-check-email-risk-bulk",
-        "description": ("Validate up to 10 email addresses with risk scores in one call."),
+        "description": "Validate up to 10 email addresses with risk scores in one call.",
         "params": {
             "emails": {
                 "type": "list[string]",

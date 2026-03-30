@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "apicrate-mcp"
-version = "0.1.0"
+dynamic = ["version"]
 description = "ApiCrate MCP Server — 21 data tools for AI agents (IP geolocation, email risk, postal codes, and more)"
 readme = "README.md"
 license = "MIT"
@@ -56,6 +56,9 @@ Documentation = "https://apicrate.io/docs/s/mcp/index.html"
 Repository = "https://github.com/apicrateio/apicrate-mcp"
 Issues = "https://github.com/apicrateio/apicrate-mcp/issues"
 Changelog = "https://github.com/apicrateio/apicrate-mcp/blob/main/CHANGELOG.md"
+
+[tool.hatch.version]
+path = "src/apicrate_mcp/__init__.py"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/apicrate_mcp"]

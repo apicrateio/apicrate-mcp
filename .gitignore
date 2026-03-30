@@ -27,6 +27,9 @@ Thumbs.db
 .env
 .env.local
 
+# Lockfile (library — consumers resolve their own deps)
+uv.lock
+
 # Testing
 .pytest_cache/
 .coverage

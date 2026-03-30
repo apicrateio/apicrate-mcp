@@ -43,7 +43,13 @@ TOOLS: list[dict[str, Any]] = [
             "and OS data. Returns detailed classification flags and nested "
             "objects for client, OS, device, and bot information."
         ),
-        "params": {"user_agent_string": {"type": "string", "required": True, "description": "Full User-Agent header value to parse."}},
+        "params": {
+            "user_agent_string": {
+                "type": "string",
+                "required": True,
+                "description": "Full User-Agent header value to parse.",
+            }
+        },
     },
     {
         "name": "apicrate-parse-user-agents-bulk",
@@ -51,16 +57,27 @@ TOOLS: list[dict[str, Any]] = [
             "Parse multiple User-Agent strings in a single call. Efficiently "
             "processes up to 100 UA strings at once."
         ),
-        "params": {"user_agent_strings": {"type": "list[string]", "required": True, "description": "List of User-Agent header values to parse. Maximum 100 items."}},
+        "params": {
+            "user_agent_strings": {
+                "type": "list[string]",
+                "required": True,
+                "description": "List of User-Agent header values to parse. Maximum 100 items.",
+            }
+        },
     },
     # IP Geolocation
     {
         "name": "apicrate-geolocate-ip",
         "description": (
-            "Geolocate an IP address. Returns country, city, ISP, ASN, and "
-            "VPN/Tor detection flags."
+            "Geolocate an IP address. Returns country, city, ISP, ASN, and VPN/Tor detection flags."
         ),
-        "params": {"ip": {"type": "string", "required": True, "description": "IPv4 or IPv6 address to geolocate."}},
+        "params": {
+            "ip": {
+                "type": "string",
+                "required": True,
+                "description": "IPv4 or IPv6 address to geolocate.",
+            }
+        },
     },
     # Countries
     {
@@ -69,25 +86,45 @@ TOOLS: list[dict[str, Any]] = [
             "Look up a country by ISO alpha-2, alpha-3, or numeric code. "
             "Returns full ISO 3166-1 record with capital, currencies, and languages."
         ),
-        "params": {"code": {"type": "string", "required": True, "description": "ISO 3166-1 alpha-2, alpha-3, or numeric country code (e.g. DE, DEU, 276)."}},
+        "params": {
+            "code": {
+                "type": "string",
+                "required": True,
+                "description": "ISO 3166-1 alpha-2, alpha-3, or numeric country code (e.g. DE, DEU, 276).",
+            }
+        },
     },
     {
         "name": "apicrate-search-countries",
-        "description": (
-            "Search or filter countries by region, sub-region, or name."
-        ),
+        "description": ("Search or filter countries by region, sub-region, or name."),
         "params": {
-            "query": {"type": "string", "required": False, "description": "Free-text search against country names."},
-            "region": {"type": "string", "required": False, "description": "Filter by region (e.g. Europe, Asia)."},
-            "sub_region": {"type": "string", "required": False, "description": "Filter by sub-region (e.g. Western Europe)."},
+            "query": {
+                "type": "string",
+                "required": False,
+                "description": "Free-text search against country names.",
+            },
+            "region": {
+                "type": "string",
+                "required": False,
+                "description": "Filter by region (e.g. Europe, Asia).",
+            },
+            "sub_region": {
+                "type": "string",
+                "required": False,
+                "description": "Filter by sub-region (e.g. Western Europe).",
+            },
         },
     },
     {
         "name": "apicrate-validate-country-codes",
-        "description": (
-            "Validate one or more ISO 3166-1 country codes (max 50)."
-        ),
-        "params": {"codes": {"type": "list[string]", "required": True, "description": "List of country codes to validate. Maximum 50 items."}},
+        "description": ("Validate one or more ISO 3166-1 country codes (max 50)."),
+        "params": {
+            "codes": {
+                "type": "list[string]",
+                "required": True,
+                "description": "List of country codes to validate. Maximum 50 items.",
+            }
+        },
     },
     # Postal Codes
     {
@@ -97,8 +134,16 @@ TOOLS: list[dict[str, Any]] = [
             "administrative region, and coordinates."
         ),
         "params": {
-            "country_code": {"type": "string", "required": True, "description": "ISO 3166-1 alpha-2 country code (e.g. DE, US)."},
-            "postal_code": {"type": "string", "required": True, "description": "The postal code to look up."},
+            "country_code": {
+                "type": "string",
+                "required": True,
+                "description": "ISO 3166-1 alpha-2 country code (e.g. DE, US).",
+            },
+            "postal_code": {
+                "type": "string",
+                "required": True,
+                "description": "The postal code to look up.",
+            },
         },
     },
     {
@@ -108,27 +153,49 @@ TOOLS: list[dict[str, Any]] = [
             "check whether it exists in the database."
         ),
         "params": {
-            "country_code": {"type": "string", "required": True, "description": "ISO 3166-1 alpha-2 country code."},
-            "postal_code": {"type": "string", "required": True, "description": "The postal code to validate."},
+            "country_code": {
+                "type": "string",
+                "required": True,
+                "description": "ISO 3166-1 alpha-2 country code.",
+            },
+            "postal_code": {
+                "type": "string",
+                "required": True,
+                "description": "The postal code to validate.",
+            },
         },
     },
     {
         "name": "apicrate-search-postal-codes",
-        "description": (
-            "Search postal codes within a country by place name or code prefix."
-        ),
+        "description": ("Search postal codes within a country by place name or code prefix."),
         "params": {
-            "country_code": {"type": "string", "required": True, "description": "ISO 3166-1 alpha-2 country code."},
-            "query": {"type": "string", "required": False, "description": "Free-text search against place names."},
-            "prefix": {"type": "string", "required": False, "description": "Postal code prefix to match."},
+            "country_code": {
+                "type": "string",
+                "required": True,
+                "description": "ISO 3166-1 alpha-2 country code.",
+            },
+            "query": {
+                "type": "string",
+                "required": False,
+                "description": "Free-text search against place names.",
+            },
+            "prefix": {
+                "type": "string",
+                "required": False,
+                "description": "Postal code prefix to match.",
+            },
         },
     },
     {
         "name": "apicrate-list-postal-systems",
-        "description": (
-            "List countries with postal code data and their code formats."
-        ),
-        "params": {"query": {"type": "string", "required": False, "description": "Filter countries by name. Omit to list all."}},
+        "description": ("List countries with postal code data and their code formats."),
+        "params": {
+            "query": {
+                "type": "string",
+                "required": False,
+                "description": "Filter countries by name. Omit to list all.",
+            }
+        },
     },
     {
         "name": "apicrate-get-postal-system",
@@ -136,7 +203,13 @@ TOOLS: list[dict[str, Any]] = [
             "Get postal system details for a specific country, including format, "
             "validation regex, and example codes."
         ),
-        "params": {"country_code": {"type": "string", "required": True, "description": "ISO 3166-1 alpha-2 country code."}},
+        "params": {
+            "country_code": {
+                "type": "string",
+                "required": True,
+                "description": "ISO 3166-1 alpha-2 country code.",
+            }
+        },
     },
     {
         "name": "apicrate-validate-postal-codes-bulk",
@@ -144,35 +217,61 @@ TOOLS: list[dict[str, Any]] = [
             "Validate multiple postal codes with format and existence checks. "
             "Each item specifies its own country code. Maximum 50 codes per call."
         ),
-        "params": {"codes": {"type": "list[dict]", "required": True, "description": "List of objects with 'country_code' and 'postal_code' keys. Maximum 50 items."}},
+        "params": {
+            "codes": {
+                "type": "list[dict]",
+                "required": True,
+                "description": "List of objects with 'country_code' and 'postal_code' keys. Maximum 50 items.",
+            }
+        },
     },
     {
         "name": "apicrate-find-nearby-postal-codes",
-        "description": (
-            "Find postal codes near a geographic point, ordered by distance."
-        ),
+        "description": ("Find postal codes near a geographic point, ordered by distance."),
         "params": {
-            "country_code": {"type": "string", "required": True, "description": "ISO 3166-1 alpha-2 country code."},
-            "lat": {"type": "number", "required": True, "description": "Latitude of the search center (-90 to 90)."},
-            "lng": {"type": "number", "required": True, "description": "Longitude of the search center (-180 to 180)."},
-            "radius_km": {"type": "number", "required": True, "description": "Search radius in kilometres (0 to 500)."},
+            "country_code": {
+                "type": "string",
+                "required": True,
+                "description": "ISO 3166-1 alpha-2 country code.",
+            },
+            "lat": {
+                "type": "number",
+                "required": True,
+                "description": "Latitude of the search center (-90 to 90).",
+            },
+            "lng": {
+                "type": "number",
+                "required": True,
+                "description": "Longitude of the search center (-180 to 180).",
+            },
+            "radius_km": {
+                "type": "number",
+                "required": True,
+                "description": "Search radius in kilometres (0 to 500).",
+            },
         },
     },
     # Timezones
     {
         "name": "apicrate-get-timezone-info",
-        "description": (
-            "Get current time, UTC offset, and DST status for a timezone."
-        ),
-        "params": {"timezone": {"type": "string", "required": True, "description": "IANA timezone name (e.g. Europe/Berlin, America/New_York)."}},
+        "description": ("Get current time, UTC offset, and DST status for a timezone."),
+        "params": {
+            "timezone": {
+                "type": "string",
+                "required": True,
+                "description": "IANA timezone name (e.g. Europe/Berlin, America/New_York).",
+            }
+        },
     },
     {
         "name": "apicrate-convert-time",
-        "description": (
-            "Convert a time from one timezone to another."
-        ),
+        "description": ("Convert a time from one timezone to another."),
         "params": {
-            "time": {"type": "string", "required": True, "description": "Time to convert (ISO 8601 or HH:MM format)."},
+            "time": {
+                "type": "string",
+                "required": True,
+                "description": "Time to convert (ISO 8601 or HH:MM format).",
+            },
             "from_tz": {"type": "string", "required": True, "description": "Source IANA timezone."},
             "to_tz": {"type": "string", "required": True, "description": "Target IANA timezone."},
         },
@@ -180,44 +279,65 @@ TOOLS: list[dict[str, Any]] = [
     # Hashing
     {
         "name": "apicrate-compute-hash",
-        "description": (
-            "Compute a cryptographic digest (MD5, SHA-1, SHA-256, or SHA-512)."
-        ),
+        "description": ("Compute a cryptographic digest (MD5, SHA-1, SHA-256, or SHA-512)."),
         "params": {
             "data": {"type": "string", "required": True, "description": "The string to hash."},
-            "algorithm": {"type": "string", "required": True, "description": "Hash algorithm: md5, sha1, sha256, or sha512."},
+            "algorithm": {
+                "type": "string",
+                "required": True,
+                "description": "Hash algorithm: md5, sha1, sha256, or sha512.",
+            },
         },
     },
     {
         "name": "apicrate-hash-password",
         "description": (
-            "Hash a password with a slow key-derivation function "
-            "(bcrypt, scrypt, or argon2id)."
+            "Hash a password with a slow key-derivation function (bcrypt, scrypt, or argon2id)."
         ),
         "params": {
-            "password": {"type": "string", "required": True, "description": "The password to hash."},
-            "algorithm": {"type": "string", "required": True, "description": "KDF algorithm: bcrypt, scrypt, or argon2id."},
+            "password": {
+                "type": "string",
+                "required": True,
+                "description": "The password to hash.",
+            },
+            "algorithm": {
+                "type": "string",
+                "required": True,
+                "description": "KDF algorithm: bcrypt, scrypt, or argon2id.",
+            },
         },
     },
     # Bible
     {
         "name": "apicrate-get-bible-verse",
-        "description": (
-            "Retrieve a verse or verse range from 30+ Bible translations."
-        ),
+        "description": ("Retrieve a verse or verse range from 30+ Bible translations."),
         "params": {
-            "reference": {"type": "string", "required": True, "description": "Verse reference (e.g. 'John 3:16', 'Genesis 1:1-3')."},
-            "translation": {"type": "string", "required": False, "description": "Translation code (e.g. 'NIV', 'KJV'). Defaults to KJV."},
+            "reference": {
+                "type": "string",
+                "required": True,
+                "description": "Verse reference (e.g. 'John 3:16', 'Genesis 1:1-3').",
+            },
+            "translation": {
+                "type": "string",
+                "required": False,
+                "description": "Translation code (e.g. 'NIV', 'KJV'). Defaults to KJV.",
+            },
         },
     },
     {
         "name": "apicrate-search-bible",
-        "description": (
-            "Search the Bible for verses matching a keyword or phrase."
-        ),
+        "description": ("Search the Bible for verses matching a keyword or phrase."),
         "params": {
-            "query": {"type": "string", "required": True, "description": "Keyword or phrase to search for."},
-            "translation": {"type": "string", "required": False, "description": "Translation code to search within. Defaults to KJV."},
+            "query": {
+                "type": "string",
+                "required": True,
+                "description": "Keyword or phrase to search for.",
+            },
+            "translation": {
+                "type": "string",
+                "required": False,
+                "description": "Translation code to search within. Defaults to KJV.",
+            },
         },
     },
     # Email Risk
@@ -228,14 +348,24 @@ TOOLS: list[dict[str, Any]] = [
             "Checks syntax, MX records, disposable domain, domain age, "
             "free provider, and abuse list."
         ),
-        "params": {"email": {"type": "string", "required": True, "description": "Email address to analyse (max 254 characters)."}},
+        "params": {
+            "email": {
+                "type": "string",
+                "required": True,
+                "description": "Email address to analyse (max 254 characters).",
+            }
+        },
     },
     {
         "name": "apicrate-check-email-risk-bulk",
-        "description": (
-            "Validate up to 10 email addresses with risk scores in one call."
-        ),
-        "params": {"emails": {"type": "list[string]", "required": True, "description": "List of email addresses to analyse (1-10 items)."}},
+        "description": ("Validate up to 10 email addresses with risk scores in one call."),
+        "params": {
+            "emails": {
+                "type": "list[string]",
+                "required": True,
+                "description": "List of email addresses to analyse (1-10 items).",
+            }
+        },
     },
 ]
 
@@ -243,6 +373,7 @@ TOOLS: list[dict[str, Any]] = [
 # ---------------------------------------------------------------------------
 # HTTP client
 # ---------------------------------------------------------------------------
+
 
 def _get_client() -> httpx.Client:
     """Create a persistent HTTP client with auth headers."""
@@ -369,6 +500,7 @@ for _tool_def in TOOLS:
 # ---------------------------------------------------------------------------
 # Entry point
 # ---------------------------------------------------------------------------
+
 
 def main() -> None:
     """Run the ApiCrate MCP server over STDIO."""

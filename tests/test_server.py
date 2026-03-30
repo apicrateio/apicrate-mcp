@@ -18,7 +18,9 @@ def test_tool_definitions_complete():
     for tool in TOOLS:
         assert "name" in tool, f"Tool missing 'name': {tool}"
         assert "description" in tool, f"Tool missing 'description': {tool}"
-        assert tool["name"].startswith("apicrate-"), f"Tool name should start with 'apicrate-': {tool['name']}"
+        assert tool["name"].startswith("apicrate-"), (
+            f"Tool name should start with 'apicrate-': {tool['name']}"
+        )
 
 
 def test_tool_names_valid():

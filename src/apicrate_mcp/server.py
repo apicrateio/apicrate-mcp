@@ -448,7 +448,7 @@ async def _call_tool(
             "content": [{"type": "text", "text": error.get("message", "Unknown error")}],
         }
 
-    return result.get("result", result)
+    return result.get("result", result)  # type: ignore[no-any-return]
 
 
 # ---------------------------------------------------------------------------
@@ -506,7 +506,7 @@ _TYPE_MAP: dict[str, Any] = {
 }
 
 
-def _make_handler(tool_name: str, params: dict[str, dict[str, Any]]):
+def _make_handler(tool_name: str, params: dict[str, dict[str, Any]]) -> Any:
     """Create a handler function for a given tool with typed parameters.
 
     Builds a proper ``inspect.Signature`` so that FastMCP exposes correct
@@ -541,10 +541,10 @@ def _make_handler(tool_name: str, params: dict[str, dict[str, Any]]):
         desc = pdef.get("description", "")
 
         if required:
-            ann = Annotated[base_type, Field(description=desc)]  # type: ignore[valid-type]
+            ann: Any = Annotated[base_type, Field(description=desc)]
             param = inspect.Parameter(pname, inspect.Parameter.KEYWORD_ONLY, annotation=ann)
         else:
-            ann = Annotated[base_type | None, Field(description=desc)]  # type: ignore[valid-type]
+            ann = Annotated[base_type | None, Field(description=desc)]
             param = inspect.Parameter(
                 pname, inspect.Parameter.KEYWORD_ONLY, default=None, annotation=ann
             )
@@ -553,7 +553,7 @@ def _make_handler(tool_name: str, params: dict[str, dict[str, Any]]):
         annotations[pname] = ann
 
     annotations["return"] = str
-    handler.__signature__ = inspect.Signature(sig_params)  # type: ignore[assignment]
+    handler.__signature__ = inspect.Signature(sig_params)  # type: ignore[attr-defined]
     handler.__annotations__ = annotations
     handler.__name__ = tool_name.replace("-", "_")
     return handler

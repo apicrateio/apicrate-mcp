@@ -56,8 +56,10 @@ def test_all_domains_covered():
     assert any("email" in n for n in names), "Missing Email Risk tools"
 
 
-def test_call_tool_success():
+async def test_call_tool_success():
     """Test that _call_tool correctly forwards requests."""
+    from unittest.mock import AsyncMock
+
     from apicrate_mcp.server import _call_tool
 
     mock_response = MagicMock()
@@ -71,9 +73,9 @@ def test_call_tool_success():
     }
 
     mock_client = MagicMock()
-    mock_client.post.return_value = mock_response
+    mock_client.post = AsyncMock(return_value=mock_response)
 
-    _call_tool(mock_client, "apicrate-lookup-country", {"code": "DE"})
+    await _call_tool(mock_client, "apicrate-lookup-country", {"code": "DE"})
 
     mock_client.post.assert_called_once()
     call_args = mock_client.post.call_args
@@ -84,8 +86,10 @@ def test_call_tool_success():
     assert payload["params"]["arguments"] == {"code": "DE"}
 
 
-def test_call_tool_error():
+async def test_call_tool_error():
     """Test that JSON-RPC errors are handled."""
+    from unittest.mock import AsyncMock
+
     from apicrate_mcp.server import _call_tool
 
     mock_response = MagicMock()
@@ -97,9 +101,9 @@ def test_call_tool_error():
     }
 
     mock_client = MagicMock()
-    mock_client.post.return_value = mock_response
+    mock_client.post = AsyncMock(return_value=mock_response)
 
-    result = _call_tool(mock_client, "apicrate-lookup-country", {"code": "ZZ"})
+    result = await _call_tool(mock_client, "apicrate-lookup-country", {"code": "ZZ"})
 
     assert result["isError"] is True
     assert "Country not found: ZZ" in result["content"][0]["text"]
@@ -107,10 +111,10 @@ def test_call_tool_error():
 
 def test_missing_api_key_exits():
     """Server should exit if APICRATE_API_KEY is not set."""
-    from apicrate_mcp.server import _get_client
+    import apicrate_mcp.server as srv
 
     with patch.dict("os.environ", {"APICRATE_API_KEY": ""}, clear=False), pytest.raises(SystemExit):
-        _get_client()
+        srv._get_client()
 
 
 def test_version():

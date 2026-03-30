@@ -14,19 +14,18 @@ Usage:
 import json
 import os
 import sys
+import threading
 from typing import Any
 
 import httpx
 from mcp.server.fastmcp import FastMCP
 
 # ---------------------------------------------------------------------------
-# Configuration
+# Configuration defaults
 # ---------------------------------------------------------------------------
 
-API_KEY = os.environ.get("APICRATE_API_KEY", "")
-BASE_URL = os.environ.get("APICRATE_BASE_URL", "https://api.apicrate.io")
-MCP_ENDPOINT = f"{BASE_URL}/mcp/"
-TIMEOUT = float(os.environ.get("APICRATE_TIMEOUT", "30"))
+_DEFAULT_BASE_URL = "https://api.apicrate.io"
+_DEFAULT_TIMEOUT = 30.0
 
 # ---------------------------------------------------------------------------
 # Tool definitions — mirrored from the hosted server
@@ -373,9 +372,14 @@ TOOLS: list[dict[str, Any]] = [
 # ---------------------------------------------------------------------------
 
 
-def _get_client() -> httpx.Client:
-    """Create a persistent HTTP client with auth headers."""
-    if not API_KEY:
+def _get_client() -> httpx.AsyncClient:
+    """Create a persistent async HTTP client with auth headers.
+
+    Reads environment variables at call time so that configuration set
+    after module import is picked up correctly.
+    """
+    api_key = os.environ.get("APICRATE_API_KEY", "")
+    if not api_key:
         print(
             "Error: APICRATE_API_KEY environment variable is not set.\n"
             "Get your free API key at https://apicrate.io and run:\n\n"
@@ -384,14 +388,19 @@ def _get_client() -> httpx.Client:
         )
         sys.exit(1)
 
-    return httpx.Client(
-        base_url=BASE_URL,
-        headers={"X-API-Key": API_KEY},
-        timeout=TIMEOUT,
+    base_url = os.environ.get("APICRATE_BASE_URL", _DEFAULT_BASE_URL)
+    timeout = float(os.environ.get("APICRATE_TIMEOUT", str(_DEFAULT_TIMEOUT)))
+
+    return httpx.AsyncClient(
+        base_url=base_url,
+        headers={"X-API-Key": api_key},
+        timeout=timeout,
     )
 
 
-def _call_tool(client: httpx.Client, name: str, arguments: dict[str, Any]) -> dict[str, Any]:
+async def _call_tool(
+    client: httpx.AsyncClient, name: str, arguments: dict[str, Any]
+) -> dict[str, Any]:
     """
     Forward a tool call to the hosted ApiCrate MCP server.
 
@@ -408,7 +417,7 @@ def _call_tool(client: httpx.Client, name: str, arguments: dict[str, Any]) -> di
         },
     }
 
-    response = client.post("/mcp/", json=payload)
+    response = await client.post("/mcp/", json=payload)
     response.raise_for_status()
 
     result = response.json()
@@ -438,13 +447,16 @@ mcp = FastMCP(
 )
 
 # We store the HTTP client at module level, initialized lazily
-_client: httpx.Client | None = None
+_client: httpx.AsyncClient | None = None
+_client_lock = threading.Lock()
 
 
-def _ensure_client() -> httpx.Client:
+def _ensure_client() -> httpx.AsyncClient:
     global _client
     if _client is None:
-        _client = _get_client()
+        with _client_lock:
+            if _client is None:
+                _client = _get_client()
     return _client
 
 
@@ -453,7 +465,7 @@ def _make_handler(tool_name: str):
 
     async def handler(**kwargs: Any) -> str:
         client = _ensure_client()
-        result = _call_tool(client, tool_name, kwargs)
+        result = await _call_tool(client, tool_name, kwargs)
 
         # If the result has isError, propagate as error text
         if isinstance(result, dict) and result.get("isError"):

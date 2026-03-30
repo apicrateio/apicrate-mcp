@@ -31,7 +31,8 @@ _DEFAULT_BASE_URL = "https://api.apicrate.io"
 _DEFAULT_TIMEOUT = 30.0
 
 # ---------------------------------------------------------------------------
-# Tool definitions — mirrored from the hosted server
+# Tool definitions — static fallback, used when the hosted server is
+# unreachable at startup.
 # ---------------------------------------------------------------------------
 
 TOOLS: list[dict[str, Any]] = [
@@ -434,7 +435,9 @@ async def _call_tool(
     except (ValueError, UnicodeDecodeError):
         return {
             "isError": True,
-            "content": [{"type": "text", "text": f"Invalid JSON response (HTTP {response.status_code})"}],
+            "content": [
+                {"type": "text", "text": f"Invalid JSON response (HTTP {response.status_code})"}
+            ],
         }
 
     # Handle JSON-RPC error
@@ -556,12 +559,83 @@ def _make_handler(tool_name: str, params: dict[str, dict[str, Any]]):
     return handler
 
 
-# Register all tools with FastMCP
-for _tool_def in TOOLS:
-    _name = _tool_def["name"]
-    _desc = _tool_def["description"]
-    _handler = _make_handler(_name, _tool_def.get("params", {}))
-    mcp.tool(name=_name, description=_desc)(_handler)
+def _register_tools(tools: list[dict[str, Any]]) -> None:
+    """Register a list of tool definitions with the FastMCP server."""
+    for tool_def in tools:
+        name = tool_def["name"]
+        desc = tool_def["description"]
+        handler = _make_handler(name, tool_def.get("params", {}))
+        mcp.tool(name=name, description=desc)(handler)
+
+
+def _json_schema_to_params(schema: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Convert a JSON Schema ``properties`` object to our internal param format."""
+    properties = schema.get("properties", {})
+    required_set = set(schema.get("required", []))
+    params: dict[str, dict[str, Any]] = {}
+
+    for pname, pdef in properties.items():
+        # Map JSON Schema type to our type strings
+        json_type = pdef.get("type", "string")
+        if json_type == "array":
+            items_type = pdef.get("items", {}).get("type", "string")
+            ptype = "list[dict]" if items_type == "object" else "list[string]"
+        elif json_type == "number":
+            ptype = "number"
+        elif json_type == "integer":
+            ptype = "integer"
+        else:
+            ptype = "string"
+
+        params[pname] = {
+            "type": ptype,
+            "required": pname in required_set,
+            "description": pdef.get("description", ""),
+        }
+
+    return params
+
+
+def _fetch_live_tools() -> list[dict[str, Any]] | None:
+    """Fetch the tool list from the hosted MCP server.
+
+    Returns our internal tool format, or ``None`` on any failure.
+    """
+    api_key = os.environ.get("APICRATE_API_KEY", "")
+    if not api_key:
+        return None
+
+    base_url = os.environ.get("APICRATE_BASE_URL", _DEFAULT_BASE_URL)
+
+    payload = {"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}
+    try:
+        with httpx.Client(
+            base_url=base_url, headers={"X-API-Key": api_key}, timeout=10
+        ) as client:
+            response = client.post("/mcp/", json=payload)
+            response.raise_for_status()
+            data = response.json()
+    except Exception:  # noqa: BLE001
+        return None
+
+    result = data.get("result", {})
+    raw_tools = result.get("tools", [])
+    if not raw_tools:
+        return None
+
+    tools = []
+    for t in raw_tools:
+        tools.append({
+            "name": t["name"],
+            "description": t.get("description", ""),
+            "params": _json_schema_to_params(t.get("inputSchema", {})),
+        })
+    return tools
+
+
+# Register static tools immediately so the module is usable in tests
+# without a network connection. main() re-registers from the live server.
+_register_tools(TOOLS)
 
 
 # ---------------------------------------------------------------------------
@@ -571,6 +645,11 @@ for _tool_def in TOOLS:
 
 def main() -> None:
     """Run the ApiCrate MCP server over STDIO."""
+    live = _fetch_live_tools()
+    if live is not None:
+        # Clear static registrations and use the live set
+        mcp._tool_manager._tools.clear()
+        _register_tools(live)
     mcp.run(transport="stdio")
 
 

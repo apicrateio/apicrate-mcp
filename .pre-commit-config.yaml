@@ -1,0 +1,10 @@
+repos:
+- repo: https://github.com/astral-sh/ruff-pre-commit
+  # Ruff version.
+  rev: v0.15.5
+  hooks:
+    # Run the linter.
+    - id: ruff
+      args: [ "--ignore=F401", "--ignore=I001", "--ignore=E402", "--ignore=E501", "--ignore=F841", "--ignore=F405" ]
+    # Run the formatter.
+    - id: ruff-format

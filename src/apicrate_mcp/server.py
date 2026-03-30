@@ -11,6 +11,7 @@ Usage:
     APICRATE_API_KEY=ac_usr_... python -m apicrate_mcp
 """
 
+import atexit
 import inspect
 import json
 import os
@@ -419,10 +420,22 @@ async def _call_tool(
         },
     }
 
-    response = await client.post("/mcp/", json=payload)
-    response.raise_for_status()
+    try:
+        response = await client.post("/mcp/", json=payload)
+        response.raise_for_status()
+    except httpx.HTTPError as exc:
+        return {
+            "isError": True,
+            "content": [{"type": "text", "text": f"HTTP request failed: {exc}"}],
+        }
 
-    result = response.json()
+    try:
+        result = response.json()
+    except (ValueError, UnicodeDecodeError):
+        return {
+            "isError": True,
+            "content": [{"type": "text", "text": f"Invalid JSON response (HTTP {response.status_code})"}],
+        }
 
     # Handle JSON-RPC error
     if "error" in result:
@@ -460,6 +473,22 @@ def _ensure_client() -> httpx.AsyncClient:
             if _client is None:
                 _client = _get_client()
     return _client
+
+
+def _close_client() -> None:
+    """Best-effort synchronous close of the async HTTP client at exit."""
+    global _client
+    if _client is not None:
+        try:
+            import asyncio
+
+            asyncio.get_event_loop().run_until_complete(_client.aclose())
+        except Exception:  # noqa: BLE001
+            pass
+        _client = None
+
+
+atexit.register(_close_client)
 
 
 _TYPE_MAP: dict[str, Any] = {

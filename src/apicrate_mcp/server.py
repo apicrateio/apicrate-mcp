@@ -609,9 +609,7 @@ def _fetch_live_tools() -> list[dict[str, Any]] | None:
 
     payload = {"jsonrpc": "2.0", "id": 1, "method": "tools/list", "params": {}}
     try:
-        with httpx.Client(
-            base_url=base_url, headers={"X-API-Key": api_key}, timeout=10
-        ) as client:
+        with httpx.Client(base_url=base_url, headers={"X-API-Key": api_key}, timeout=10) as client:
             response = client.post("/mcp/", json=payload)
             response.raise_for_status()
             data = response.json()
@@ -625,11 +623,13 @@ def _fetch_live_tools() -> list[dict[str, Any]] | None:
 
     tools = []
     for t in raw_tools:
-        tools.append({
-            "name": t["name"],
-            "description": t.get("description", ""),
-            "params": _json_schema_to_params(t.get("inputSchema", {})),
-        })
+        tools.append(
+            {
+                "name": t["name"],
+                "description": t.get("description", ""),
+                "params": _json_schema_to_params(t.get("inputSchema", {})),
+            }
+        )
     return tools
 
 

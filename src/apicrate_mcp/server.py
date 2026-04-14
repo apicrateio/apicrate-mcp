@@ -368,6 +368,137 @@ TOOLS: list[dict[str, Any]] = [
             }
         },
     },
+    # QR Code
+    {
+        "name": "apicrate-generate-qr",
+        "description": (
+            "Generate a QR code from structured input. Supports 7 preset types: "
+            "text, url, wifi, vcard, email, sms, geo. Returns a base64 data URI "
+            "(default) or a pre-signed S3 download URL."
+        ),
+        "params": {
+            "preset": {
+                "type": "string",
+                "required": True,
+                "description": "QR type — one of: text, url, wifi, vcard, email, sms, geo.",
+            },
+            "text": {
+                "type": "string",
+                "required": False,
+                "description": "Text to encode (preset=text).",
+            },
+            "url": {
+                "type": "string",
+                "required": False,
+                "description": "URL to encode (preset=url).",
+            },
+            "ssid": {
+                "type": "string",
+                "required": False,
+                "description": "WiFi network name (preset=wifi, required).",
+            },
+            "password": {
+                "type": "string",
+                "required": False,
+                "description": "WiFi password (preset=wifi).",
+            },
+            "encryption": {
+                "type": "string",
+                "required": False,
+                "description": "WiFi encryption — WPA, WEP, nopass (preset=wifi, default WPA).",
+            },
+            "hidden": {
+                "type": "boolean",
+                "required": False,
+                "description": "WiFi hidden network (preset=wifi, default false).",
+            },
+            "name": {
+                "type": "string",
+                "required": False,
+                "description": "Contact full name (preset=vcard, required).",
+            },
+            "phone": {
+                "type": "string",
+                "required": False,
+                "description": "Phone number (preset=vcard, sms).",
+            },
+            "email": {
+                "type": "string",
+                "required": False,
+                "description": "Email address (preset=vcard).",
+            },
+            "org": {
+                "type": "string",
+                "required": False,
+                "description": "Organization (preset=vcard).",
+            },
+            "address": {
+                "type": "string",
+                "required": False,
+                "description": "Mailing address (preset=vcard).",
+            },
+            "to": {
+                "type": "string",
+                "required": False,
+                "description": "Recipient email (preset=email, required).",
+            },
+            "subject": {
+                "type": "string",
+                "required": False,
+                "description": "Email subject (preset=email).",
+            },
+            "body": {
+                "type": "string",
+                "required": False,
+                "description": "Email body (preset=email).",
+            },
+            "message": {
+                "type": "string",
+                "required": False,
+                "description": "SMS message (preset=sms).",
+            },
+            "latitude": {
+                "type": "number",
+                "required": False,
+                "description": "Latitude -90 to 90 (preset=geo, required).",
+            },
+            "longitude": {
+                "type": "number",
+                "required": False,
+                "description": "Longitude -180 to 180 (preset=geo, required).",
+            },
+            "format": {
+                "type": "string",
+                "required": False,
+                "description": "Output format — base64 (default), png, svg.",
+            },
+            "size": {
+                "type": "integer",
+                "required": False,
+                "description": "Image size 100-2000px (default 400, ignored for svg).",
+            },
+            "fg_color": {
+                "type": "string",
+                "required": False,
+                "description": "Foreground hex color (default #000000).",
+            },
+            "bg_color": {
+                "type": "string",
+                "required": False,
+                "description": "Background hex color (default #FFFFFF).",
+            },
+            "error_correction": {
+                "type": "string",
+                "required": False,
+                "description": "Error correction level: L, M (default), Q, H.",
+            },
+            "margin": {
+                "type": "integer",
+                "required": False,
+                "description": "Quiet zone 0-20 modules (default 4).",
+            },
+        },
+    },
 ]
 
 
@@ -458,9 +589,9 @@ async def _call_tool(
 mcp = FastMCP(
     "ApiCrate",
     instructions=(
-        "Access 21 data tools: IP geolocation, email risk, postal codes, "
-        "countries, timezones, user-agent parsing, hashing, and Bible search. "
-        "Powered by apicrate.io."
+        "Access 22 data tools: IP geolocation, email risk, postal codes, "
+        "countries, timezones, user-agent parsing, hashing, Bible search, "
+        "and QR code generation. Powered by apicrate.io."
     ),
 )
 

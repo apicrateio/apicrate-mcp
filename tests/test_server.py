@@ -6,10 +6,10 @@ import pytest
 
 
 def test_tool_definitions_complete():
-    """Verify all 21 tools are registered."""
+    """Verify all 22 tools are registered."""
     from apicrate_mcp.server import TOOLS
 
-    assert len(TOOLS) == 21
+    assert len(TOOLS) == 22
 
     # Every tool should have a name and description
     for tool in TOOLS:

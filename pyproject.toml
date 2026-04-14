@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "apicrate-mcp"
 dynamic = ["version"]
-description = "ApiCrate MCP Server — 21 data tools for AI agents (IP geolocation, email risk, postal codes, and more)"
+description = "ApiCrate MCP Server — 22 data tools for AI agents (IP geolocation, email risk, postal codes, QR codes, and more)"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"

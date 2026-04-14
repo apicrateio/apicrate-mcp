@@ -209,6 +209,12 @@ It should call `apicrate-lookup-country` and return information about Germany.
 | `apicrate-check-email-risk` | Syntax, MX, disposable, domain age, abuse list | 4 |
 | `apicrate-check-email-risk-bulk` | Bulk assess up to 10 emails | 4/email |
 
+### QR Code
+
+| Tool | Description | Credits |
+|------|-------------|---------|
+| `apicrate-generate-qr` | Generate QR from text, URL, WiFi, vCard, email, SMS, or geo | 2 |
+
 ## Example Prompts
 
 Once connected, try these:
